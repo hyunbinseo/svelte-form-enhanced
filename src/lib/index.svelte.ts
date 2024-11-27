@@ -16,22 +16,22 @@ export const createFormHelper = <
 >(
 	options: Partial<
 		{
-			delay: number;
+			minSubmitDuration: number;
 			disableSubmitter: boolean;
-			onBeforeRequest: (param: SubmitFunctionParam) => void;
+			onBeforeSubmit: (param: SubmitFunctionParam) => void;
 		} & (
 			| {
-					onAfterResponse: (param: ReturnFunctionParam<GeneratedSubmitFunction>) => void;
+					onAfterSubmit: (param: ReturnFunctionParam<GeneratedSubmitFunction>) => void;
 					updateOptions?: never;
 			  }
 			| {
-					onAfterResponse?: never;
+					onAfterSubmit?: never;
 					updateOptions: { reset?: boolean; invalidateAll?: boolean };
 			  }
 		)
 	> = {}
 ) => {
-	options = { delay: 1000, disableSubmitter: true, ...options };
+	options = { minSubmitDuration: 1000, disableSubmitter: true, ...options };
 	let state = $state<FormState>('standby');
 	return {
 		get state() {
@@ -43,13 +43,15 @@ export const createFormHelper = <
 		submitFunction: (async (p: SubmitFunctionParam) => {
 			p.controller.signal.addEventListener('abort', () => (state = 'standby'));
 			if (options.disableSubmitter && isButtonOrInputEl(p.submitter)) p.submitter.disabled = true;
-			const timer = options.delay && new Promise((resolve) => setTimeout(resolve, options.delay));
-			await options.onBeforeRequest?.(p);
+			const timer =
+				options.minSubmitDuration &&
+				new Promise((resolve) => setTimeout(resolve, options.minSubmitDuration));
+			await options.onBeforeSubmit?.(p);
 			state = 'submitting';
 			return async (p1) => {
 				await timer;
-				await (options.onAfterResponse
-					? options.onAfterResponse(p1)
+				await (options.onAfterSubmit
+					? options.onAfterSubmit(p1)
 					: p1.update(options.updateOptions));
 				if (options.disableSubmitter && isButtonOrInputEl(p.submitter))
 					p.submitter.disabled = false;
