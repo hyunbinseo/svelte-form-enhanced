@@ -1,53 +1,60 @@
-export { createSubmitFunction, type ExtractActionResult } from './index.js';
+import type { SubmitFunction } from '@sveltejs/kit';
 
-type ModalOptions = {
-	showOnMount: boolean;
-	resetFormStateOnShow: boolean;
-};
+type FormState = 'standby' | 'submitting' | 'submitted';
 
-export const createFormState = (modalOptions: Partial<ModalOptions> = {}) => {
-	type FormState = 'standby' | 'submitting' | 'submitted';
-	let formState = $state<FormState>('standby');
+type SubmitFunctionParam = Parameters<SubmitFunction>[0];
 
-	const m: ModalOptions = {
-		showOnMount: false,
-		resetFormStateOnShow: true,
-		...modalOptions
-	};
+type ReturnFunctionParam<GeneratedSubmitFunction extends SubmitFunction> = //
+	Parameters<Exclude<Awaited<ReturnType<GeneratedSubmitFunction>>, void>>[0];
 
-	let showModal = $state(m.showOnMount);
+const isButtonOrInputEl = (submitter: HTMLElement | null) =>
+	submitter instanceof HTMLButtonElement || //
+	submitter instanceof HTMLInputElement;
 
+export const createFormHelper = <
+	GeneratedSubmitFunction extends SubmitFunction<any, any> = SubmitFunction
+>(
+	options: Partial<
+		{
+			delay: number;
+			disableSubmitter: boolean;
+			onBeforeRequest: (param: SubmitFunctionParam) => void;
+		} & (
+			| {
+					onAfterResponse: (param: ReturnFunctionParam<GeneratedSubmitFunction>) => void;
+					updateOptions?: never;
+			  }
+			| {
+					onAfterResponse?: never;
+					updateOptions: { reset?: boolean; invalidateAll?: boolean };
+			  }
+		)
+	> = {}
+) => {
+	options = { delay: 1000, disableSubmitter: true, ...options };
+	let state = $state<FormState>('standby');
 	return {
-		// Form
-		get isStandby() {
-			return formState === 'standby';
-		},
-		get isSubmitting() {
-			return formState === 'submitting';
-		},
-		get isSubmitted() {
-			return formState === 'submitted';
-		},
 		get state() {
-			return formState;
+			return state;
 		},
-		set is(state: FormState) {
-			formState = state;
+		set state(newState: FormState) {
+			state = newState;
 		},
-
-		// Modal
-		get isShown() {
-			return showModal;
-		},
-		set isShown(show: boolean) {
-			showModal = show;
-		},
-		show: () => {
-			// The form state should not be updated in a onclose handler.
-			// The dialog's content can change while it is being closed.
-			if (m.resetFormStateOnShow) formState = 'standby';
-			showModal = true;
-		},
-		close: () => (showModal = false)
+		submitFunction: (async (p: SubmitFunctionParam) => {
+			p.controller.signal.addEventListener('abort', () => (state = 'standby'));
+			if (options.disableSubmitter && isButtonOrInputEl(p.submitter)) p.submitter.disabled = true;
+			const timer = options.delay && new Promise((resolve) => setTimeout(resolve, options.delay));
+			await options.onBeforeRequest?.(p);
+			state = 'submitting';
+			return async (p1) => {
+				await timer;
+				await (options.onAfterResponse
+					? options.onAfterResponse(p1)
+					: p1.update(options.updateOptions));
+				if (options.disableSubmitter && isButtonOrInputEl(p.submitter))
+					p.submitter.disabled = false;
+				state = 'submitted';
+			};
+		}) satisfies SubmitFunction
 	};
 };
