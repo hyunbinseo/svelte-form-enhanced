@@ -17,16 +17,20 @@ export const createFormHelper = <
 		} & (
 			| {
 					onAfterSubmit: (param: ReturnFunctionParam<GeneratedSubmitFunction>) => void;
-					updateOptions?: never;
+					updateOptions: never;
 			  }
 			| {
-					onAfterSubmit?: never;
+					onAfterSubmit: never;
 					updateOptions: { reset?: boolean; invalidateAll?: boolean };
 			  }
 		)
 	> = {}
 ) => {
+	// NOTE: If the user explicitly provides `undefined` as an option value,
+	// the spread operator will override the default value with `undefined`.
+	// This behavior matches the existing type definition.
 	options = { minSubmitDuration: 1000, ...options };
+
 	let state = $state<FormState>('standby');
 	return {
 		get state() {
