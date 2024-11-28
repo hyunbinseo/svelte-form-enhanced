@@ -1,7 +1,7 @@
 {
 	"name": "svelte-form-enhanced",
 	"description": "SvelteKit use:enhance helper library. Automatically manage form state, delay page update, disable submitter, and much more.",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && node --run package",
