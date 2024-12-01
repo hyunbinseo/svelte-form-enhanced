@@ -16,7 +16,10 @@ export const createFormHelper = <
 			onBeforeSubmit: (param: SubmitFunctionParam) => void;
 		} & (
 			| {
-					onAfterSubmit: (param: ReturnFunctionParam<GeneratedSubmitFunction>) => void;
+					onAfterSubmit: (
+						param: ReturnFunctionParam<GeneratedSubmitFunction> &
+							Pick<SubmitFunctionParam, 'submitter'>
+					) => void;
 					updateOptions: never;
 			  }
 			| {
@@ -49,7 +52,7 @@ export const createFormHelper = <
 			return async (p1) => {
 				await timer;
 				await (options.onAfterSubmit
-					? options.onAfterSubmit(p1)
+					? options.onAfterSubmit({ ...p1, submitter: p.submitter })
 					: p1.update(options.updateOptions));
 				state = 'submitted';
 			};
