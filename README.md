@@ -24,11 +24,10 @@ npm i svelte-form-enhanced -D
   const f = createFormHelper();
 </script>
 
-<!-- Maintains the submitting state for 1 second. -->
+<!-- Maintains submitting state for 1 second (customizable) -->
 <form method="post" use:enhance={f.submitFunction}>
-  <!-- Automatically updates the form state. -->
-  <button disabled={f.state === 'submitting'}>
-    <!-- Show a loading spinner during submission. -->
+  <!-- Use the submitting state to show loading UI: -->
+  <button disabled={f.state === 'submitting'} class="disabled:btn-spinner">
     {f.state === 'submitting' ? 'Submitting' : 'Submit'}
   </button>
 </form>
@@ -96,4 +95,22 @@ The function provided to the `use:enhance` has been separated into two:
     };
   }}
 ></form>
+```
+
+## Advanced
+
+Show spinner on the submit button during submission:
+
+```svelte
+<script lang="ts">
+  const f = createFormHelper({
+    onBeforeSubmit: ({ submitter }) => {
+      submitter?.classList.add('disabled:btn-spinner');
+    },
+    onAfterSubmit: async ({ submitter, update }) => {
+      await update();
+      submitter?.classList.remove('disabled:btn-spinner');
+    }
+  });
+</script>
 ```
