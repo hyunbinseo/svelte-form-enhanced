@@ -97,9 +97,12 @@ The function provided to the `use:enhance` has been separated into two:
 ></form>
 ```
 
-## Advanced
+## Multiple Submit Buttons
 
-Show spinner on the submit button during submission:
+When a form contains multiple submit buttons:
+
+- All submit buttons are disabled during form submission
+- Only the clicked submit button displays a loading spinner
 
 ```svelte
 <script lang="ts">
@@ -113,4 +116,10 @@ Show spinner on the submit button during submission:
     }
   });
 </script>
+
+<form method="post" use:enhance={f.submitFunction}>
+  <!-- Loading spinner only appears on the button that is clicked -->
+  <button disabled={f.state === 'submitting'} formaction="?/a">A</button>
+  <button disabled={f.state === 'submitting'} formaction="?/b">B</button>
+</form>
 ```
