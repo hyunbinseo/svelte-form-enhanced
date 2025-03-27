@@ -35,22 +35,24 @@
 		"svelte": "^5.0.2"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^4.0.0",
+		"@eslint/compat": "^1.2.7",
+		"@eslint/js": "^9.23.0",
+		"@sveltejs/adapter-auto": "^5.0.0",
 		"@sveltejs/package": "^2.3.10",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
-		"@types/eslint": "^9.6.1",
-		"eslint": "^9.20.1",
-		"eslint-config-prettier": "^10.0.1",
-		"eslint-plugin-svelte": "^2.46.1",
-		"globals": "^15.15.0",
-		"prettier": "^3.5.1",
+		"@types/node": "^22.13.14",
+		"eslint": "^9.23.0",
+		"eslint-config-prettier": "^10.1.1",
+		"eslint-plugin-svelte": "^3.3.3",
+		"globals": "^16.0.0",
+		"prettier": "^3.5.3",
 		"prettier-plugin-svelte": "^3.3.3",
-		"publint": "^0.3.5",
-		"svelte": "^5.20.1",
-		"svelte-check": "^4.1.4",
-		"typescript": "^5.7.3",
-		"typescript-eslint": "^8.24.0",
-		"vite": "^6.1.0"
+		"publint": "^0.3.9",
+		"svelte": "^5.25.3",
+		"svelte-check": "^4.1.5",
+		"typescript": "^5.8.2",
+		"typescript-eslint": "^8.28.0",
+		"vite": "^6.2.3"
 	},
 	"keywords": [
 		"Svelte",
@@ -67,7 +69,7 @@
 		"url": "https://github.com/hyunbinseo/svelte-form-enhanced/issues"
 	},
 	"homepage": "https://github.com/hyunbinseo/svelte-form-enhanced#readme",
-	"packageManager": "pnpm@10.4.0+sha512.6b849d0787d97f8f4e1f03a9b8ff8f038e79e153d6f11ae539ae7c435ff9e796df6a862c991502695c7f9e8fac8aeafc1ac5a8dab47e36148d183832d886dd52",
+	"packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6",
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"esbuild"

@@ -8,6 +8,7 @@ type ReturnFunctionParam<GeneratedSubmitFunction extends SubmitFunction> = //
 	Parameters<Exclude<Awaited<ReturnType<GeneratedSubmitFunction>>, void>>[0];
 
 export const createFormHelper = <
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	GeneratedSubmitFunction extends SubmitFunction<any, any> = SubmitFunction
 >(
 	options: Partial<
