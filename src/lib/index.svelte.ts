@@ -9,7 +9,7 @@ type ReturnFunctionParam<GeneratedSubmitFunction extends SubmitFunction> = //
 
 export const createFormHelper = <
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	GeneratedSubmitFunction extends SubmitFunction<any, any> = SubmitFunction
+	GeneratedSubmitFunction extends SubmitFunction<any, any> = SubmitFunction,
 >(
 	options: Partial<
 		{
@@ -19,7 +19,7 @@ export const createFormHelper = <
 			| {
 					onAfterSubmit: (
 						param: ReturnFunctionParam<GeneratedSubmitFunction> &
-							Pick<SubmitFunctionParam, 'submitter'>
+							Pick<SubmitFunctionParam, 'submitter'>,
 					) => void;
 					updateOptions: never;
 			  }
@@ -28,7 +28,7 @@ export const createFormHelper = <
 					updateOptions: { reset?: boolean; invalidateAll?: boolean };
 			  }
 		)
-	> = {}
+	> = {},
 ) => {
 	// NOTE: If the user explicitly provides `undefined` as an option value,
 	// the spread operator will override the default value with `undefined`.
@@ -57,6 +57,6 @@ export const createFormHelper = <
 					: p1.update(options.updateOptions));
 				state = 'submitted';
 			};
-		}) satisfies SubmitFunction
+		}) satisfies SubmitFunction,
 	};
 };

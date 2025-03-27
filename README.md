@@ -46,7 +46,7 @@ type FormState = 'standby' | 'submitting' | 'submitted';
 
   const f = createFormHelper<SubmitFunction>({
     // The `ActionResult` object is now typed.
-    onAfterSubmit: ({ result }) => {}
+    onAfterSubmit: ({ result }) => {},
   });
 </script>
 ```
@@ -78,7 +78,7 @@ The function provided to the `use:enhance` has been separated into two:
     onAfterSubmit: async ({ update }) => {
       await update(); // default logic
       console.log('After submit');
-    }
+    },
   });
 </script>
 
@@ -113,7 +113,7 @@ When a form contains multiple submit buttons:
     onAfterSubmit: async ({ submitter, update }) => {
       await update();
       submitter?.classList.remove('disabled:btn-spinner');
-    }
+    },
   });
 </script>
 
