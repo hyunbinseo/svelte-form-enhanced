@@ -97,7 +97,51 @@ The function provided to the `use:enhance` has been separated into two:
 ></form>
 ```
 
-## Multiple Submit Buttons
+## Advanced Usage
+
+### Form on Layout
+
+> `use:enhance` will update the `form` property, `page.form` and `page.status` on a successful or invalid response, but **only if the action is on the same page you’re submitting from.** — [SvelteKit Docs](https://svelte.dev/docs/kit/form-actions#Progressive-enhancement)
+
+```svelte
+<!-- src/routes/+layout.svelte -->
+<script lang="ts">
+  import { enhance } from '$app/forms';
+  import { createFormHelper } from 'svelte-form-enhanced';
+  import type { SubmitFunction } from './a/$types.js';
+
+  let submittedAt = $state<Date>();
+
+  const f = createFormHelper<SubmitFunction>({
+    onAfterSubmit: async ({ result }) => {
+      if (result.type !== 'success') return; // handle error
+      if (!result.data) return; // type guard
+      submittedAt = result.data.submittedAt;
+    },
+  });
+</script>
+
+<form use:enhance={f.submitFunction} method="post" action="/a">
+  {#if submittedAt}
+    <p>
+      Last submitted at
+      <time datetime={submittedAt.toISOString()}>
+        {submittedAt.toLocaleTimeString()}
+      </time>
+    </p>
+  {/if}
+  <button>Submit</button>
+</form>
+```
+
+```ts
+// src/routes/a/+page.server.ts
+export const actions = {
+  default: () => ({ submittedAt: new Date() }),
+};
+```
+
+### Multiple Submit Buttons
 
 When a form contains multiple submit buttons:
 
